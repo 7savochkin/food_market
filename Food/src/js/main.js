@@ -42,14 +42,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Timer
 
-    const deadline = '2022-04-15';
+    const deadline = '2023-04-15';
 
     function getTimeRemaining(endtime) {
         let days, hours, minutes, seconds
 
         const t = Date.parse(endtime) - Date.parse(new Date());
 
-        if (t < 0){
+        if (t < 0) {
             days = 0;
             hours = 0;
             minutes = 0;
@@ -103,4 +103,76 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline);
+
+
+    // MODAL
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalCloseBtn = document.querySelector('[data-close]');
+
+
+    function showElementByBtns(triggers, element, closeBtn, func) {
+        triggers.forEach(value => {
+            if (func) {
+                value.addEventListener('click', func)
+            } else {
+                value.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    if (event.target && event.target.classList.contains('btn')) {
+                        element.style.cssText = 'display: block;';
+                        document.body.style.overflow = 'hidden';
+                    }
+                    closeElement(closeBtn, element);
+                })
+            }
+        })
+    }
+
+    function closeElement(closeBtn, element) {
+
+        function _close(item) {
+            item.style.cssText = 'display: none;';
+            document.body.style.overflow = 'scroll';
+        }
+
+        closeBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (event.target) {
+                _close(element);
+            }
+        })
+        element.addEventListener('click', (event) => {
+            if (event.target === element) {
+                _close(element);
+            }
+        })
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Escape') {
+                _close(element);
+            }
+        })
+    }
+
+    function _openModal() {
+        modal.style.cssText = 'display: block;';
+        document.body.style.overflow = 'hidden';
+        closeElement(modalCloseBtn, modal);
+        clearInterval(modelTimerId);
+    }
+
+
+    showElementByBtns(modalTrigger, modal, modalCloseBtn, _openModal);
+
+    const modelTimerId = setTimeout(_openModal, 3000);
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+            _openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+            clearInterval(modelTimerId)
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });

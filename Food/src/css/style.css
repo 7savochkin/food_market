@@ -755,6 +755,11 @@ a {
   border: none;
   background-color: transparent;
   cursor: pointer;
+  -webkit-transition: color 1s;
+  transition: color 1s;
+}
+.modal__close:hover {
+  color: limegreen;
 }
 .modal__title {
   text-align: center;

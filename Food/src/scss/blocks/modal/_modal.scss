@@ -33,11 +33,16 @@
         border: none;
         background-color: transparent;
         cursor: pointer;
+        transition: color 1s;
+    }
+    &__close:hover {
+        color: limegreen;
     }
     &__title {
         text-align: center;
         font-size: 22px;
         text-transform: uppercase;
+
     }
     &__input {
         display: block;
