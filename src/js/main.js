@@ -158,19 +158,19 @@ window.addEventListener('DOMContentLoaded', () => {
         modal.style.cssText = 'display: block;';
         document.body.style.overflow = 'hidden';
         closeElement(modalCloseBtn, modal);
-        // clearInterval(modelTimerId);
+        clearInterval(modelTimerId);
     }
 
 
     showElementByBtns(modalTrigger, modal, modalCloseBtn, _openModal);
 
-    // const modelTimerId = setTimeout(_openModal, 3000);
+    const modelTimerId = setTimeout(_openModal, 3000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
             _openModal();
             window.removeEventListener('scroll', showModalByScroll);
-            // clearInterval(modelTimerId)
+            clearInterval(modelTimerId)
         }
     }
 
@@ -233,4 +233,61 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
         10,
         '.menu .container').render();
+    
+    // FORMS
+
+    const messages = {
+        loading: 'loading',
+        success: 'success',
+        fail: 'fail'
+    }
+
+    const forms = document.querySelectorAll('form');
+
+    forms.forEach(item=>{
+        postData(item);
+    })
+
+    function postData(form) {
+        form.addEventListener('submit', event=>{
+            event.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status__messages');
+            statusMessage.textContent = messages.loading;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest();
+
+            request.open('POST', '../server.php');
+            request.setRequestHeader('Content-type', 'application/json');
+
+            const formData = new FormData(form);
+
+            const obj = {};
+
+            formData.forEach(function (value, key) {
+                obj[key] = value;
+            })
+
+            const json = JSON.stringify(obj);
+
+
+            request.send(json)
+
+
+            request.addEventListener('load', ()=>{
+                if (request.status === 200) {
+                    statusMessage.textContent = messages.success;
+                    console.log(request.response);
+                    form.reset();
+                    setTimeout(()=>{
+                        statusMessage.remove();
+                    }, 2000)
+                }else{
+                    statusMessage.textContent = messages.fail;
+                }
+            });
+        });
+    }
 });
