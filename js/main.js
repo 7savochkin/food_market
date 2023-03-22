@@ -179,7 +179,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Class for Cards
 
-    class MenuItem{
+    class MenuItem {
         constructor(src, alt, subtitle, describe, price, parentSelector) {
             this.src = src;
             this.alt = alt;
@@ -191,11 +191,11 @@ window.addEventListener('DOMContentLoaded', () => {
             this.changeToUAH();
         }
 
-        changeToUAH(){
+        changeToUAH() {
             this.price *= this.currency
         }
 
-        render(){
+        render() {
             const element = document.createElement('div');
 
             element.innerHTML = `<div class="menu__item">
@@ -234,7 +234,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
         10,
         '.menu .container').render();
-    
+
     // FORMS
 
     const messages = {
@@ -245,12 +245,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const forms = document.querySelectorAll('form');
 
-    forms.forEach(item=>{
+    forms.forEach(item => {
         postData(item);
     })
 
     function postData(form) {
-        form.addEventListener('submit', event=>{
+        form.addEventListener('submit', event => {
             event.preventDefault();
 
             const statusMessage = document.createElement('img');
@@ -262,11 +262,6 @@ window.addEventListener('DOMContentLoaded', () => {
             // form.append(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-
-            request.open('POST', '../server.php');
-            request.setRequestHeader('Content-type', 'application/json');
-
             const formData = new FormData(form);
 
             const obj = {};
@@ -275,26 +270,26 @@ window.addEventListener('DOMContentLoaded', () => {
                 obj[key] = value;
             })
 
-            const json = JSON.stringify(obj);
 
-
-            request.send(json)
-
-
-            request.addEventListener('load', ()=>{
-                if (request.status === 200) {
-                    showThanksModal(messages.success);
-                    console.log(request.response);
-                    form.reset();
-                        statusMessage.remove();
-
-                }else{
-                    showThanksModal(messages.fail);
-                }
-            });
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+            }).then(data => data.text()
+            ).then(data => {
+                console.log(data);
+                showThanksModal(messages.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(messages.fail);
+            }).finally(() => {
+                form.reset();
+            })
         });
     }
-    
+
     function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
         prevModalDialog.classList.add('hide');
@@ -310,11 +305,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
         document.querySelector('.modal').append(thanksModal);
 
-        setTimeout(()=>{
+        setTimeout(() => {
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
             closeModal();
-        },4000);
+        }, 4000);
     }
+
+    // fetch('https://jsonplaceholder.typicode.com/posts', {
+    //     method: "POST",
+    //     body: JSON.stringify({name: 'Alex'}),
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     }
+    // })
+    //     .then(response => response.json())
+    //     .then(json => console.log(json));
+
+
 });
