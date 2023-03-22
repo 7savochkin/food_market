@@ -284,6 +284,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     setTimeout(()=>{
                         statusMessage.remove();
                     }, 2000)
+
                 }else{
                     statusMessage.textContent = messages.fail;
                 }
