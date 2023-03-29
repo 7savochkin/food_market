@@ -1,4 +1,10 @@
-"use strict";
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+var __webpack_exports__ = {};
+/*!********************!*\
+  !*** ./js/main.js ***!
+  \********************/
+
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -603,3 +609,7 @@ window.addEventListener('DOMContentLoaded', () => {
     getDynamicInformation('#age');
 
 });
+
+/******/ })()
+;
+//# sourceMappingURL=bundle.js.map
